@@ -1,4 +1,5 @@
 import { createEventBus, type EventBus, type STTEvents } from '@atlas.agents/types';
+import { getConfig } from '@atlas.agents/config';
 
 export interface LocalSTTConfig {
   serverUrl?: string;
@@ -21,8 +22,9 @@ export class LocalSTTService {
   private audioStream: MediaStream | null = null;
 
   constructor(config: LocalSTTConfig = {}) {
-    this.serverUrl = config.serverUrl ?? 'ws://localhost:8765/ws';
-    this.language = config.language ?? 'en';
+    const globalConfig = getConfig();
+    this.serverUrl = config.serverUrl ?? globalConfig.localSpeechServer.serverUrl;
+    this.language = config.language ?? globalConfig.localSpeechServer.stt.language;
     this.eventBus = createEventBus<STTEvents>();
   }
 
@@ -45,7 +47,7 @@ export class LocalSTTService {
 
     try {
       this.audioStream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: true, noiseSuppression: true, sampleRate: 16000 },
+        audio: { echoCancellation: true, noiseSuppression: true, sampleRate: getConfig().stt.sampleRate },
       });
     } catch (error) {
       this.eventBus.emit('stt:error', { error: error as Error, type: 'mic-access' });
@@ -63,8 +65,8 @@ export class LocalSTTService {
       })
     );
 
-    const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-      ? 'audio/webm;codecs=opus'
+    const mimeType = MediaRecorder.isTypeSupported(getConfig().stt.audioFormatFallback)
+      ? getConfig().stt.audioFormatFallback
       : 'audio/webm';
 
     this.mediaRecorder = new MediaRecorder(this.audioStream, { mimeType });
@@ -76,7 +78,7 @@ export class LocalSTTService {
           JSON.stringify({
             type: 'stt:audio',
             id: this.sessionId,
-            format: 'webm-opus',
+            format: getConfig().localSpeechServer.stt.audioFormat,
           })
         );
         event.data.arrayBuffer().then((buf) => {
@@ -97,7 +99,7 @@ export class LocalSTTService {
     };
 
     // Stream chunks every 1 second
-    this.mediaRecorder.start(1000);
+    this.mediaRecorder.start(getConfig().stt.mediaRecorderTimesliceMs);
     this._isListening = true;
     this.eventBus.emit('stt:started', {});
   }

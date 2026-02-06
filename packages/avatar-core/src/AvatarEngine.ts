@@ -6,6 +6,7 @@ import type { VRMAnimation } from '@pixiv/three-vrm-animation';
 import { createEventBus, type EventBus, type AvatarCoreEvents, type VisemeName, type AnimationPlaybackOptions } from '@atlas.agents/types';
 import { AnimationManager } from './AnimationManager';
 import { VisemeController } from './VisemeController';
+import { getConfig } from '@atlas.agents/config';
 
 export interface AvatarCoreConfig {
   animationBasePath?: string;
@@ -25,11 +26,12 @@ export class AvatarEngine {
   private loader: THREE.GLTFLoader | null = null;
 
   constructor(config: AvatarCoreConfig = {}) {
+    const globalConfig = getConfig();
     this.config = {
-      animationBasePath: config.animationBasePath ?? '/animations/',
-      defaultAnimation: config.defaultAnimation ?? 'modelPose',
-      animationFadeIn: config.animationFadeIn ?? 0.3,
-      animationFadeOut: config.animationFadeOut ?? 0.2,
+      animationBasePath: config.animationBasePath ?? globalConfig.avatar.animationBasePath,
+      defaultAnimation: config.defaultAnimation ?? globalConfig.avatar.defaultAnimation,
+      animationFadeIn: config.animationFadeIn ?? globalConfig.avatar.animationFadeIn,
+      animationFadeOut: config.animationFadeOut ?? globalConfig.avatar.animationFadeOut,
     };
     this.eventBus = createEventBus<AvatarCoreEvents>();
     this.animationManager = new AnimationManager(this.config);
@@ -65,8 +67,7 @@ export class AvatarEngine {
       // Auto-scale to target height
       const box = new THREE.Box3().setFromObject(this.scene);
       const modelHeight = box.max.y - box.min.y;
-      const TARGET_HEIGHT = 1.6;
-      const autoScale = TARGET_HEIGHT / modelHeight;
+      const autoScale = getConfig().avatar.targetHeight / modelHeight;
       this.scene.scale.setScalar(autoScale);
 
       // Position feet on ground
@@ -95,7 +96,7 @@ export class AvatarEngine {
   getMixer(): THREE.AnimationMixer | null { return this.mixer; }
 
   async loadAnimation(name: string, url?: string): Promise<void> {
-    const animUrl = url ?? `${this.config.animationBasePath}${name}.vrma`;
+    const animUrl = url ?? `${getConfig().avatar.animationBasePath}${name}.vrma`;
     await this.animationManager.loadAnimation(name, animUrl, this.vrm!, this.loader!);
   }
 

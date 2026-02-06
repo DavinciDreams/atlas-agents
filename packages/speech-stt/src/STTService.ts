@@ -1,4 +1,5 @@
 import { createEventBus, type EventBus, type STTEvents } from '@atlas.agents/types';
+import { getConfig } from '@atlas.agents/config';
 
 export interface STTConfig {
   provider?: 'web-speech' | 'whisper';
@@ -20,7 +21,6 @@ export class STTService {
   // Web Speech API
   private recognition: SpeechRecognition | null = null;
   private retryCount = 0;
-  private readonly MAX_RETRIES = 3;
 
   // Whisper
   private mediaRecorder: MediaRecorder | null = null;
@@ -28,9 +28,12 @@ export class STTService {
   private audioStream: MediaStream | null = null;
 
   constructor(config: STTConfig = {}) {
+    const globalConfig = getConfig();
+    const sttConfig = globalConfig.getSTTConfig(config.provider);
+
     this.config = {
-      provider: config.provider ?? this.detectProvider(),
-      language: config.language ?? 'en-US',
+      provider: config.provider ?? sttConfig.provider,
+      language: config.language ?? sttConfig.language,
       continuous: config.continuous ?? false,
       interimResults: config.interimResults ?? false,
       whisper: config.whisper,
@@ -94,7 +97,7 @@ export class STTService {
     this.recognition.continuous = this.config.continuous;
     this.recognition.lang = this.config.language;
     this.recognition.interimResults = this.config.interimResults;
-    this.recognition.maxAlternatives = 1;
+    this.recognition.maxAlternatives = getConfig().stt.webSpeechMaxAlternatives;
 
     this.recognition.onresult = (event: SpeechRecognitionEvent) => {
       const result = event.results[event.results.length - 1];
@@ -112,11 +115,11 @@ export class STTService {
       if (event.error === 'aborted') return;
       this.eventBus.emit('stt:error', { error: new Error(event.message || event.error), type: event.error });
 
-      if (event.error === 'network' && this.retryCount < this.MAX_RETRIES) {
+      if (event.error === 'network' && this.retryCount < getConfig().stt.maxRetries) {
         this.retryCount++;
         setTimeout(() => {
           try { this.recognition?.start(); } catch { /* ignore */ }
-        }, 1000 * this.retryCount);
+        }, getConfig().stt.retryDelayMs * this.retryCount);
       }
     };
 
@@ -158,12 +161,12 @@ export class STTService {
 
     try {
       this.audioStream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: true, noiseSuppression: true, sampleRate: 16000 }
+        audio: { echoCancellation: true, noiseSuppression: true, sampleRate: getConfig().stt.sampleRate }
       });
 
       this.audioChunks = [];
-      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-        ? 'audio/webm;codecs=opus' : 'audio/webm';
+      const mimeType = MediaRecorder.isTypeSupported(getConfig().stt.audioFormatFallback)
+        ? getConfig().stt.audioFormatFallback : 'audio/webm';
 
       this.mediaRecorder = new MediaRecorder(this.audioStream, { mimeType });
 
@@ -179,7 +182,7 @@ export class STTService {
         this.eventBus.emit('stt:error', { error: new Error('MediaRecorder error'), type: 'recording' });
       };
 
-      this.mediaRecorder.start(100);
+      this.mediaRecorder.start(getConfig().stt.mediaRecorderTimesliceMs);
       this._isListening = true;
       this.eventBus.emit('stt:started', {});
     } catch (error) {
@@ -206,21 +209,22 @@ export class STTService {
     }
 
     const audioBlob = new Blob(this.audioChunks, { type: 'audio/webm' });
-    if (audioBlob.size < 1000) {
+    if (audioBlob.size < getConfig().stt.minAudioSizeBytes) {
       this._isListening = false;
       this.eventBus.emit('stt:stopped', {});
       return;
     }
 
-    const apiUrl = this.config.whisper?.apiUrl ?? 'https://api.groq.com/openai/v1/audio/transcriptions';
-    const model = this.config.whisper?.model ?? 'whisper-large-v3';
+    const globalConfig = getConfig();
+    const whisperConfig = globalConfig.getWhisperConfig(this.config.whisper!.apiKey);
+    const apiUrl = this.config.whisper?.apiUrl ?? whisperConfig.apiUrl;
 
     try {
       const formData = new FormData();
       formData.append('file', audioBlob, 'audio.webm');
-      formData.append('model', model);
+      formData.append('model', whisperConfig.model);
       formData.append('language', this.config.language.split('-')[0]);
-      formData.append('response_format', 'json');
+      formData.append('response_format', whisperConfig.responseFormat);
 
       const response = await fetch(apiUrl, {
         method: 'POST',

@@ -43,7 +43,7 @@ app = FastAPI(title="Atlas Speech Server", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.cors_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -67,6 +67,7 @@ async def health():
 # ---------------------------------------------------------------------------
 # WebSocket endpoint
 # ---------------------------------------------------------------------------
+
 
 class STTSession:
     """Tracks state for one STT streaming session."""
@@ -95,25 +96,20 @@ async def websocket_endpoint(ws: WebSocket):
 
                 if msg_type == "tts:synthesize":
                     await handle_tts(ws, msg_id, msg, loop)
-
                 elif msg_type == "stt:start":
                     stt_sessions[msg_id] = STTSession(
                         session_id=msg_id,
                         language=msg.get("language", settings.stt_language),
                     )
-
                 elif msg_type == "stt:audio":
                     # Next frame is binary audio
-                    binary_data = await ws.receive_bytes()
                     session = stt_sessions.get(msg_id)
                     if session:
-                        await handle_stt_audio(ws, session, binary_data, loop)
-
+                        await handle_stt_audio(ws, session, loop)
                 elif msg_type == "stt:stop":
                     session = stt_sessions.pop(msg_id, None)
                     if session:
                         await handle_stt_stop(ws, session, loop)
-
                 elif msg_type == "ping":
                     await ws.send_json({"type": "pong"})
 
@@ -131,7 +127,9 @@ async def websocket_endpoint(ws: WebSocket):
 # TTS handler
 # ---------------------------------------------------------------------------
 
+
 async def handle_tts(ws: WebSocket, msg_id: str, msg: dict, loop: asyncio.AbstractEventLoop):
+    """Handle TTS synthesis request."""
     text = msg.get("text", "")
     voice = msg.get("voice")
 
@@ -145,7 +143,7 @@ async def handle_tts(ws: WebSocket, msg_id: str, msg: dict, loop: asyncio.Abstra
         await ws.send_json({
             "type": "tts:result",
             "id": msg_id,
-            "format": "wav",
+            "format": settings.tts_output_format,
             "sampleRate": tts_engine.sample_rate,
             "byteLength": len(wav_bytes),
         })
@@ -159,16 +157,15 @@ async def handle_tts(ws: WebSocket, msg_id: str, msg: dict, loop: asyncio.Abstra
 # STT handlers
 # ---------------------------------------------------------------------------
 
+
 async def handle_stt_audio(
-    ws: WebSocket,
-    session: STTSession,
-    audio_bytes: bytes,
-    loop: asyncio.AbstractEventLoop,
+    ws: WebSocket, session: STTSession, loop: asyncio.AbstractEventLoop
 ):
-    session.audio_chunks.append(audio_bytes)
+    """Handle incoming audio chunk for STT."""
+    session.audio_chunks.append(data["bytes"])
 
     # Check silence on latest chunk
-    rms = await loop.run_in_executor(None, STTEngine.compute_rms, audio_bytes)
+    rms = await loop.run_in_executor(None, STTEngine.compute_rms, data["bytes"])
 
     if rms < settings.stt_silence_threshold:
         session.silent_chunks += 1
@@ -191,7 +188,6 @@ async def handle_stt_audio(
 
         if result["text"]:
             # Check if silence exceeded threshold (auto end-of-speech)
-            # Each chunk is ~1s, so silent_chunks * 1s >= silence_duration
             silence_exceeded = session.silent_chunks >= settings.stt_silence_duration
 
             if silence_exceeded:
@@ -225,9 +221,7 @@ async def handle_stt_audio(
 
 
 async def handle_stt_stop(
-    ws: WebSocket,
-    session: STTSession,
-    loop: asyncio.AbstractEventLoop,
+    ws: WebSocket, session: STTSession, loop: asyncio.AbstractEventLoop
 ):
     """Process remaining audio when user manually stops."""
     if not session.audio_chunks:
@@ -264,6 +258,7 @@ async def handle_stt_stop(
 # ---------------------------------------------------------------------------
 # CLI entry point
 # ---------------------------------------------------------------------------
+
 
 def cli():
     import uvicorn

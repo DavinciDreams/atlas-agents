@@ -1,6 +1,7 @@
 import { createEventBus, type EventBus, type TTSEvents, type VisemeData } from '@atlas.agents/types';
 import { textToVisemes } from './visemePreprocessor';
 import { TTSCache } from './TTSCache';
+import { getConfig, type TTSConfig as ConfigTTSConfig } from '@atlas.agents/config';
 
 export interface TTSConfig {
   provider?: 'edge-tts' | 'web-speech';
@@ -31,15 +32,18 @@ export class TTSService {
   private speechBufferTimeout: number | null = null;
   private speechSegmentQueue: string[] = [];
   private isSpeakingQueue = false;
-  private readonly SPEAK_BUFFER_DELAY = 150;
+  private readonly SPEAK_BUFFER_DELAY = getConfig().tts.bufferDelayMs;
 
   constructor(config: TTSConfig = {}) {
+    const globalConfig = getConfig();
+    const ttsConfig = globalConfig.getTTSConfig(config.provider);
+
     this.config = {
-      provider: config.provider ?? 'edge-tts',
-      voice: config.voice ?? 'en-GB-LibbyNeural',
-      rate: config.rate ?? '+0%',
-      pitch: config.pitch ?? '+0Hz',
-      volume: config.volume ?? '+0%',
+      provider: config.provider ?? ttsConfig.provider,
+      voice: config.voice ?? ttsConfig.voice,
+      rate: config.rate ?? ttsConfig.rate,
+      pitch: config.pitch ?? ttsConfig.pitch,
+      volume: config.volume ?? ttsConfig.volume,
     };
     this.eventBus = createEventBus<TTSEvents>();
     this.cache = new TTSCache(config.cacheSize, config.cacheTtlMs);
@@ -52,7 +56,7 @@ export class TTSService {
       return {
         audioBuffer: cached.audioBuffer,
         visemes: cached.visemes,
-        duration: text.length * 0.15,
+        duration: text.length * getConfig().tts.durationMultiplier,
       };
     }
 
@@ -61,7 +65,7 @@ export class TTSService {
     }
     // web-speech doesn't produce ArrayBuffer, return empty
     const visemes = textToVisemes(text);
-    return { audioBuffer: new ArrayBuffer(0), visemes, duration: text.length * 0.15 };
+    return { audioBuffer: new ArrayBuffer(0), visemes, duration: text.length * getConfig().tts.durationMultiplier };
   }
 
   private async synthesizeEdgeTTS(text: string): Promise<TTSResult> {
@@ -82,7 +86,7 @@ export class TTSService {
     const arrayBuffer = await result.audio.arrayBuffer();
     this.cache.set(text, this.config.voice, arrayBuffer, visemes);
 
-    const duration = text.length * 0.15;
+    const duration = text.length * getConfig().tts.durationMultiplier;
     const ttsResult: TTSResult = { audioBuffer: arrayBuffer, visemes, duration };
     this.eventBus.emit('tts:synthesis-complete', ttsResult);
     return ttsResult;
@@ -116,7 +120,7 @@ export class TTSService {
     this.speechChunkBuffer += text;
     this.speechBufferTimeout = window.setTimeout(
       () => this.flushSpeechBuffer(),
-      this.SPEAK_BUFFER_DELAY
+      getConfig().tts.bufferDelayMs
     );
   }
 
@@ -142,9 +146,9 @@ export class TTSService {
           segments.push(phraseMatch[0].trim());
           remaining = remaining.slice(phraseMatch[0].length).trim();
         } else {
-          if (remaining.length > 200) {
-            const splitIndex = remaining.lastIndexOf(' ', 200);
-            if (splitIndex > 50) {
+          if (remaining.length > getConfig().tts.maxSegmentLength) {
+            const splitIndex = remaining.lastIndexOf(' ', getConfig().tts.maxSegmentLength);
+            if (splitIndex > getConfig().tts.minSplitIndex) {
               segments.push(remaining.slice(0, splitIndex).trim());
               remaining = remaining.slice(splitIndex).trim();
             } else {

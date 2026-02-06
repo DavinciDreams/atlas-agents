@@ -1,0 +1,31 @@
+{
+  "name": "@atlas.agents/config",
+  "version": "1.0.0",
+  "description": "Centralized configuration system for Atlas Agents",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "atlas",
+    "agents",
+    "configuration",
+    "config"
+  ],
+  "author": "Atlas Agents Team",
+  "license": "MIT",
+  "devDependencies": {
+    "tsup": "^7.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@atlas.agents/types": "workspace:*"
+  }
+}

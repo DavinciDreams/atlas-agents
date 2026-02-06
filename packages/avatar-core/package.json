@@ -20,7 +20,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@atlas.agents/types": "0.2.0"
+    "@atlas.agents/types": "0.2.0",
+    "@atlas.agents/config": "workspace:*"
   },
   "peerDependencies": {
     "three": ">=0.150.0",

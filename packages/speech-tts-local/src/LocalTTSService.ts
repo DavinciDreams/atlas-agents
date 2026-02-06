@@ -1,5 +1,6 @@
 import { createEventBus, type EventBus, type TTSEvents, type VisemeData } from '@atlas.agents/types';
 import { textToVisemes, TTSCache } from '@atlas.agents/speech-tts';
+import { getConfig } from '@atlas.agents/config';
 
 export interface LocalTTSConfig {
   serverUrl?: string;
@@ -37,11 +38,12 @@ export class LocalTTSService {
   private chunkBufferTimeout: number | null = null;
   private audioSegmentQueue: string[] = [];
   private isPlayingQueue = false;
-  private readonly CHUNK_BUFFER_DELAY = 150;
+  private readonly CHUNK_BUFFER_DELAY = getConfig().tts.bufferDelayMs;
 
   constructor(config: LocalTTSConfig = {}) {
-    this.serverUrl = config.serverUrl ?? 'ws://localhost:8765/ws';
-    this.voice = config.voice ?? 'af_heart';
+    const globalConfig = getConfig();
+    this.serverUrl = config.serverUrl ?? globalConfig.localSpeechServer.serverUrl;
+    this.voice = config.voice ?? globalConfig.localSpeechServer.tts.voice;
     this.eventBus = createEventBus<TTSEvents>();
     this.cache = new TTSCache(config.cacheSize, config.cacheTtlMs);
   }
@@ -56,7 +58,7 @@ export class LocalTTSService {
       return {
         audioBuffer: cached.audioBuffer,
         visemes: cached.visemes,
-        duration: text.length * 0.15,
+        duration: text.length * getConfig().tts.durationMultiplier,
       };
     }
 
@@ -108,7 +110,7 @@ export class LocalTTSService {
     this.chunkBuffer += text;
     this.chunkBufferTimeout = window.setTimeout(
       () => this.flushChunkBuffer(),
-      this.CHUNK_BUFFER_DELAY
+      getConfig().tts.bufferDelayMs
     );
   }
 
@@ -220,7 +222,7 @@ export class LocalTTSService {
         const pending = this.pendingTTS.get(this.pendingMeta.id);
         if (pending) {
           const visemes = textToVisemes(pending.text);
-          const duration = pending.text.length * 0.15;
+          const duration = pending.text.length * getConfig().tts.durationMultiplier;
           const result: TTSResult = {
             audioBuffer: event.data,
             visemes,
@@ -293,9 +295,9 @@ export class LocalTTSService {
           segments.push(phraseMatch[0].trim());
           remaining = remaining.slice(phraseMatch[0].length).trim();
         } else {
-          if (remaining.length > 200) {
-            const splitIndex = remaining.lastIndexOf(' ', 200);
-            if (splitIndex > 50) {
+          if (remaining.length > getConfig().tts.maxSegmentLength) {
+            const splitIndex = remaining.lastIndexOf(' ', getConfig().tts.maxSegmentLength);
+            if (splitIndex > getConfig().tts.minSplitIndex) {
               segments.push(remaining.slice(0, splitIndex).trim());
               remaining = remaining.slice(splitIndex).trim();
             } else {

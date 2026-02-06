@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@atlas.agents/types": "0.2.0",
+    "@atlas.agents/config": "workspace:*",
     "edge-tts-universal": "^1.3.3"
   },
   "devDependencies": {
