@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.turbo/
+*.tsbuildinfo
+*.timestamp-*
+.env
+.env.local
+
+# Symlinked assets (local dev only)
+examples/*/public/

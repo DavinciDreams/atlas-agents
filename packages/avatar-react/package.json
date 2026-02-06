@@ -1,0 +1,52 @@
+{
+  "name": "@atlas-agents/avatar-react",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "React component wrapping the avatar-core engine",
+  "main": "dist/avatar-react.cjs.js",
+  "module": "dist/avatar-react.es.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/avatar-react.es.js",
+      "require": "./dist/avatar-react.cjs.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "test": "vitest run",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@atlas-agents/types": "*",
+    "@atlas-agents/avatar-core": "*"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "three": ">=0.150.0",
+    "@react-three/fiber": "^8.0.0",
+    "@react-three/drei": "^9.0.0",
+    "@pixiv/three-vrm": "^3.0.0",
+    "@pixiv/three-vrm-animation": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@types/three": "^0.159.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "@pixiv/three-vrm": "^3.4.4",
+    "@pixiv/three-vrm-animation": "^3.4.4",
+    "@react-three/fiber": "^8.15.16",
+    "@react-three/drei": "^9.97.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "three": "^0.159.0",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.0",
+    "vite-plugin-dts": "^4.0.0",
+    "vitest": "^2.1.8"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "@atlas-agents/types",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Shared types, event bus, protocol adapters for Atlas Agents",
+  "main": "dist/types.cjs.js",
+  "module": "dist/types.es.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/types.es.js",
+      "require": "./dist/types.cjs.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "test": "vitest run",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^5.4.21",
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "^2.1.9"
+  }
+}

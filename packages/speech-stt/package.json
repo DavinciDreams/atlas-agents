@@ -1,0 +1,31 @@
+{
+  "name": "@atlas-agents/speech-stt",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Speech-to-text service with Web Speech API and Whisper fallback",
+  "main": "dist/speech-stt.cjs.js",
+  "module": "dist/speech-stt.es.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/speech-stt.es.js",
+      "require": "./dist/speech-stt.cjs.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "test": "vitest run",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@atlas-agents/types": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.3",
+    "vite": "^5.4.0",
+    "vite-plugin-dts": "^4.0.0",
+    "vitest": "^2.1.8"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "name": "@atlas-agents/avatar-core",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Headless VRM avatar engine - loading, animations, lip sync",
+  "main": "dist/avatar-core.cjs.js",
+  "module": "dist/avatar-core.es.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/avatar-core.es.js",
+      "require": "./dist/avatar-core.cjs.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "test": "vitest run",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@atlas-agents/types": "*"
+  },
+  "peerDependencies": {
+    "three": ">=0.150.0",
+    "@pixiv/three-vrm": "^3.0.0",
+    "@pixiv/three-vrm-animation": "^3.0.0"
+  },
+  "devDependencies": {
+    "@pixiv/three-vrm": "^3.4.4",
+    "@pixiv/three-vrm-animation": "^3.4.4",
+    "three": "^0.159.0",
+    "@types/three": "^0.159.0",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.0",
+    "vite-plugin-dts": "^4.0.0",
+    "vitest": "^2.1.8"
+  }
+}
