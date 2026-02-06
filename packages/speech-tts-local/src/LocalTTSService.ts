@@ -38,10 +38,11 @@ export class LocalTTSService {
   private chunkBufferTimeout: number | null = null;
   private audioSegmentQueue: string[] = [];
   private isPlayingQueue = false;
-  private readonly CHUNK_BUFFER_DELAY = getConfig().tts.bufferDelayMs;
+  private readonly CHUNK_BUFFER_DELAY: number;
 
   constructor(config: LocalTTSConfig = {}) {
     const globalConfig = getConfig();
+    this.CHUNK_BUFFER_DELAY = globalConfig.tts.bufferDelayMs;
     this.serverUrl = config.serverUrl ?? globalConfig.localSpeechServer.serverUrl;
     this.voice = config.voice ?? globalConfig.localSpeechServer.tts.voice;
     this.eventBus = createEventBus<TTSEvents>();

@@ -32,18 +32,20 @@ export class TTSService {
   private speechBufferTimeout: number | null = null;
   private speechSegmentQueue: string[] = [];
   private isSpeakingQueue = false;
-  private readonly SPEAK_BUFFER_DELAY = getConfig().tts.bufferDelayMs;
+  private readonly SPEAK_BUFFER_DELAY: number;
 
   constructor(config: TTSConfig = {}) {
     const globalConfig = getConfig();
-    const ttsConfig = globalConfig.getTTSConfig(config.provider);
+    this.SPEAK_BUFFER_DELAY = globalConfig.tts.bufferDelayMs;
+    const baseConfig = globalConfig.tts;
+    const provider = config.provider ?? baseConfig.defaultProvider;
 
     this.config = {
-      provider: config.provider ?? ttsConfig.provider,
-      voice: config.voice ?? ttsConfig.voice,
-      rate: config.rate ?? ttsConfig.rate,
-      pitch: config.pitch ?? ttsConfig.pitch,
-      volume: config.volume ?? ttsConfig.volume,
+      provider: provider,
+      voice: config.voice ?? baseConfig.defaultVoice,
+      rate: config.rate ?? baseConfig.defaultRate,
+      pitch: config.pitch ?? baseConfig.defaultPitch,
+      volume: config.volume ?? baseConfig.defaultVolume,
     };
     this.eventBus = createEventBus<TTSEvents>();
     this.cache = new TTSCache(config.cacheSize, config.cacheTtlMs);
