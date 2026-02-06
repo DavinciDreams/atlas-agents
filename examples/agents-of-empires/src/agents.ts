@@ -1,4 +1,4 @@
-import type { AgentChatWidgetConfig } from '@atlas-agents/agent-chat-widget';
+import type { AgentChatWidgetConfig } from '@atlas.agents/agent-chat-widget';
 
 /**
  * Agent definitions for the Agents of Empires game.

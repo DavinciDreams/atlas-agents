@@ -1,5 +1,5 @@
 {
-  "name": "@atlas-agents/avatar-react",
+  "name": "@atlas.agents/avatar-react",
   "version": "0.1.0",
   "type": "module",
   "description": "React component wrapping the avatar-core engine",
@@ -20,8 +20,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@atlas-agents/types": "*",
-    "@atlas-agents/avatar-core": "*"
+    "@atlas.agents/types": "0.1.0",
+    "@atlas.agents/avatar-core": "0.1.0"
   },
   "peerDependencies": {
     "react": "^18.0.0",

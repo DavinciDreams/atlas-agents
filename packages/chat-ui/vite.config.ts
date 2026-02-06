@@ -25,7 +25,7 @@ export default defineConfig({
         'react/jsx-runtime',
         'framer-motion',
         'lucide-react',
-        '@atlas-agents/types'
+        '@atlas.agents/types'
       ],
       output: {
         globals: {

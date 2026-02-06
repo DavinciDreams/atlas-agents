@@ -17,7 +17,7 @@ export default defineConfig({
       formats: ['es', 'cjs']
     },
     rollupOptions: {
-      external: ['@atlas-agents/types']
+      external: ['@atlas.agents/types']
     }
   }
 });

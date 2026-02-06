@@ -1,5 +1,5 @@
-import type { ProtocolAdapter, AgentMessage, LangChainMessage } from '@atlas-agents/types';
-import { createAgentMessage, getTextContent } from '@atlas-agents/types';
+import type { ProtocolAdapter, AgentMessage, LangChainMessage } from '@atlas.agents/types';
+import { createAgentMessage, getTextContent } from '@atlas.agents/types';
 
 const ROLE_MAP: Record<string, AgentMessage['role']> = {
   human: 'user',

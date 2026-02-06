@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import type { VRM } from '@pixiv/three-vrm';
 import { createVRMAnimationClip } from '@pixiv/three-vrm-animation';
 import type { VRMAnimation } from '@pixiv/three-vrm-animation';
-import type { AnimationPlaybackOptions } from '@atlas-agents/types';
+import type { AnimationPlaybackOptions } from '@atlas.agents/types';
 
 export class AnimationManager {
   private mixer: THREE.AnimationMixer | null = null;

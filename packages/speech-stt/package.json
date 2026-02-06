@@ -1,5 +1,5 @@
 {
-  "name": "@atlas-agents/speech-stt",
+  "name": "@atlas.agents/speech-stt",
   "version": "0.1.0",
   "type": "module",
   "description": "Speech-to-text service with Web Speech API and Whisper fallback",
@@ -20,7 +20,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@atlas-agents/types": "*"
+    "@atlas.agents/types": "0.1.0"
   },
   "devDependencies": {
     "typescript": "^5.5.3",

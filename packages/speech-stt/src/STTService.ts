@@ -1,4 +1,4 @@
-import { createEventBus, type EventBus, type STTEvents } from '@atlas-agents/types';
+import { createEventBus, type EventBus, type STTEvents } from '@atlas.agents/types';
 
 export interface STTConfig {
   provider?: 'web-speech' | 'whisper';

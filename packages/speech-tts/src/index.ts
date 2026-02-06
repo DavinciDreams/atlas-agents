@@ -8,4 +8,4 @@ export {
   getVRMBlendShapes,
 } from './visemePreprocessor';
 export { TTSCache } from './TTSCache';
-export type { TTSEvents } from '@atlas-agents/types';
+export type { TTSEvents } from '@atlas.agents/types';

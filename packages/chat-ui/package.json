@@ -1,5 +1,5 @@
 {
-  "name": "@atlas-agents/chat-ui",
+  "name": "@atlas.agents/chat-ui",
   "version": "0.1.0",
   "type": "module",
   "description": "Props-driven React chat UI components",
@@ -20,7 +20,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@atlas-agents/types": "*"
+    "@atlas.agents/types": "0.1.0"
   },
   "peerDependencies": {
     "react": "^18.0.0",

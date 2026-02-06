@@ -1,5 +1,5 @@
 {
-  "name": "@atlas-agents/avatar-core",
+  "name": "@atlas.agents/avatar-core",
   "version": "0.1.0",
   "type": "module",
   "description": "Headless VRM avatar engine - loading, animations, lip sync",
@@ -20,7 +20,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@atlas-agents/types": "*"
+    "@atlas.agents/types": "0.1.0"
   },
   "peerDependencies": {
     "three": ">=0.150.0",

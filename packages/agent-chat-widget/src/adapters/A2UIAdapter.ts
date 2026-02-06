@@ -1,5 +1,5 @@
-import type { ProtocolAdapter, AgentMessage, A2UIMessage } from '@atlas-agents/types';
-import { createAgentMessage, getTextContent } from '@atlas-agents/types';
+import type { ProtocolAdapter, AgentMessage, A2UIMessage } from '@atlas.agents/types';
+import { createAgentMessage, getTextContent } from '@atlas.agents/types';
 
 /**
  * A2UI (Agent-to-UI) Protocol Adapter

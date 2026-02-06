@@ -1,4 +1,4 @@
-import type { VisemeData } from '@atlas-agents/types';
+import type { VisemeData } from '@atlas.agents/types';
 
 interface CacheEntry {
   audioBuffer: ArrayBuffer;

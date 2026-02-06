@@ -1,5 +1,5 @@
-import type { ProtocolAdapter, AgentMessage, MCPMessage } from '@atlas-agents/types';
-import { createAgentMessage, getTextContent } from '@atlas-agents/types';
+import type { ProtocolAdapter, AgentMessage, MCPMessage } from '@atlas.agents/types';
+import { createAgentMessage, getTextContent } from '@atlas.agents/types';
 
 /**
  * Anthropic MCP (Model Context Protocol) Adapter

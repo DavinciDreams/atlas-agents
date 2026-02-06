@@ -17,10 +17,10 @@ export default defineConfig({
       formats: ['es', 'cjs'],
     },
     rollupOptions: {
-      external: ['@atlas-agents/types', 'edge-tts-universal'],
+      external: ['@atlas.agents/types', 'edge-tts-universal'],
       output: {
         globals: {
-          '@atlas-agents/types': 'AtlasAgentsTypes',
+          '@atlas.agents/types': 'AtlasAgentsTypes',
           'edge-tts-universal': 'EdgeTTSUniversal',
         },
       },

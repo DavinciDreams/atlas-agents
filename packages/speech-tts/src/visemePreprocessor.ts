@@ -1,4 +1,4 @@
-import type { VisemeData, VisemeName } from '@atlas-agents/types';
+import type { VisemeData, VisemeName } from '@atlas.agents/types';
 
 // ============================================================================
 // Phoneme-to-Viseme Mapping

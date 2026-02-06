@@ -1,5 +1,5 @@
-import type { ProtocolAdapter, AgentMessage, VercelAIMessage } from '@atlas-agents/types';
-import { createAgentMessage, getTextContent } from '@atlas-agents/types';
+import type { ProtocolAdapter, AgentMessage, VercelAIMessage } from '@atlas.agents/types';
+import { createAgentMessage, getTextContent } from '@atlas.agents/types';
 
 /**
  * Vercel AI SDK Adapter

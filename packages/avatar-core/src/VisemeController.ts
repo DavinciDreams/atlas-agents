@@ -1,5 +1,5 @@
 import type { VRM } from '@pixiv/three-vrm';
-import type { VisemeName } from '@atlas-agents/types';
+import type { VisemeName } from '@atlas.agents/types';
 
 const VISEME_TO_BLENDSHAPE: Record<VisemeName, string> = {
   'sil': 'neutral',

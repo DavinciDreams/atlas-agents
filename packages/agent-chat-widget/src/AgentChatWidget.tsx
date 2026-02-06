@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import type { Message } from '@atlas-agents/types';
-import { ChatContainer } from '@atlas-agents/chat-ui';
-import { STTService, type STTConfig } from '@atlas-agents/speech-stt';
-import { TTSService, type TTSConfig } from '@atlas-agents/speech-tts';
+import type { Message } from '@atlas.agents/types';
+import { ChatContainer } from '@atlas.agents/chat-ui';
+import { STTService, type STTConfig } from '@atlas.agents/speech-stt';
+import { TTSService, type TTSConfig } from '@atlas.agents/speech-tts';
 import { ChatOrchestrator } from './ChatOrchestrator';
 import { AnimationJudge, type AnimationJudgeConfig } from './AnimationJudge';
 import type { AIConfig } from './AIService';

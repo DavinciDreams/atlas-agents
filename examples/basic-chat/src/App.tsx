@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { AgentChatWidget } from '@atlas-agents/agent-chat-widget';
-import { AvatarModel, type AvatarModelRef } from '@atlas-agents/avatar-react';
+import { AgentChatWidget } from '@atlas.agents/agent-chat-widget';
+import { AvatarModel, type AvatarModelRef } from '@atlas.agents/avatar-react';
 
 /**
  * Basic Chat Example

@@ -1,4 +1,4 @@
-import { createEventBus, type EventBus, type TTSEvents, type VisemeData } from '@atlas-agents/types';
+import { createEventBus, type EventBus, type TTSEvents, type VisemeData } from '@atlas.agents/types';
 import { textToVisemes } from './visemePreprocessor';
 import { TTSCache } from './TTSCache';
 

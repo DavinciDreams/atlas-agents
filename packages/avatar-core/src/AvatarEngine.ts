@@ -3,7 +3,7 @@ import { VRMLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
 import type { VRM } from '@pixiv/three-vrm';
 import { VRMAnimationLoaderPlugin, createVRMAnimationClip } from '@pixiv/three-vrm-animation';
 import type { VRMAnimation } from '@pixiv/three-vrm-animation';
-import { createEventBus, type EventBus, type AvatarCoreEvents, type VisemeName, type AnimationPlaybackOptions } from '@atlas-agents/types';
+import { createEventBus, type EventBus, type AvatarCoreEvents, type VisemeName, type AnimationPlaybackOptions } from '@atlas.agents/types';
 import { AnimationManager } from './AnimationManager';
 import { VisemeController } from './VisemeController';
 

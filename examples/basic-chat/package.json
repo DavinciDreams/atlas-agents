@@ -9,12 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@atlas-agents/types": "*",
-    "@atlas-agents/speech-stt": "*",
-    "@atlas-agents/speech-tts": "*",
-    "@atlas-agents/avatar-react": "*",
-    "@atlas-agents/chat-ui": "*",
-    "@atlas-agents/agent-chat-widget": "*",
+    "@atlas.agents/types": "*",
+    "@atlas.agents/speech-stt": "*",
+    "@atlas.agents/speech-tts": "*",
+    "@atlas.agents/avatar-react": "*",
+    "@atlas.agents/chat-ui": "*",
+    "@atlas.agents/agent-chat-widget": "*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "three": "^0.159.0",

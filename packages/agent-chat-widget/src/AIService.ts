@@ -1,4 +1,4 @@
-import type { ChatMessage, AIStreamChunk, AIStreamOptions, AIStateChanges, Emotion } from '@atlas-agents/types';
+import type { ChatMessage, AIStreamChunk, AIStreamOptions, AIStateChanges, Emotion } from '@atlas.agents/types';
 
 export interface AIConfig {
   provider?: string;

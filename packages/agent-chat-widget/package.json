@@ -1,5 +1,5 @@
 {
-  "name": "@atlas-agents/agent-chat-widget",
+  "name": "@atlas.agents/agent-chat-widget",
   "version": "0.1.0",
   "type": "module",
   "description": "Composed agent chat widget with AI, speech, avatar, and protocol adapters",
@@ -20,12 +20,12 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@atlas-agents/types": "*",
-    "@atlas-agents/speech-stt": "*",
-    "@atlas-agents/speech-tts": "*",
-    "@atlas-agents/avatar-core": "*",
-    "@atlas-agents/avatar-react": "*",
-    "@atlas-agents/chat-ui": "*",
+    "@atlas.agents/types": "0.1.0",
+    "@atlas.agents/speech-stt": "0.1.0",
+    "@atlas.agents/speech-tts": "0.1.0",
+    "@atlas.agents/avatar-core": "0.1.0",
+    "@atlas.agents/avatar-react": "0.1.0",
+    "@atlas.agents/chat-ui": "0.1.0",
     "zustand": "^4.4.7"
   },
   "peerDependencies": {

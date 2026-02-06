@@ -4,7 +4,7 @@ import {
   type WidgetEvents,
   type Message,
   type ChatMessage,
-} from '@atlas-agents/types';
+} from '@atlas.agents/types';
 import { AIService, type AIConfig } from './AIService';
 
 let _idCounter = 0;

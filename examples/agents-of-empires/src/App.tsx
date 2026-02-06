@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { AgentChatWidget } from '@atlas-agents/agent-chat-widget';
+import { AgentChatWidget } from '@atlas.agents/agent-chat-widget';
 import { GAME_AGENTS, type GameAgent } from './agents';
 
 /**

@@ -1,4 +1,4 @@
-import type { AnimationJudgment, AnimationTrigger } from '@atlas-agents/types';
+import type { AnimationJudgment, AnimationTrigger } from '@atlas.agents/types';
 
 export interface AnimationJudgeConfig {
   apiKey?: string;

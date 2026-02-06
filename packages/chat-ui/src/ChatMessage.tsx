@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Message } from '@atlas-agents/types';
+import type { Message } from '@atlas.agents/types';
 
 export interface ChatMessageProps {
   message: Message;

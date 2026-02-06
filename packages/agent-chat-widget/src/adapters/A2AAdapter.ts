@@ -1,5 +1,5 @@
-import type { ProtocolAdapter, AgentMessage, A2AMessage } from '@atlas-agents/types';
-import { createAgentMessage, getTextContent } from '@atlas-agents/types';
+import type { ProtocolAdapter, AgentMessage, A2AMessage } from '@atlas.agents/types';
+import { createAgentMessage, getTextContent } from '@atlas.agents/types';
 
 /**
  * Google A2A (Agent-to-Agent) Protocol Adapter

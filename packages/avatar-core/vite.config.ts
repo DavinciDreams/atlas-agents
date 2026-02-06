@@ -18,7 +18,7 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [
-        '@atlas-agents/types',
+        '@atlas.agents/types',
         'three',
         'three/examples/jsm/loaders/GLTFLoader.js',
         '@pixiv/three-vrm',

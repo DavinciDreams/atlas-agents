@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import type { Message } from '@atlas-agents/types';
+import type { Message } from '@atlas.agents/types';
 import { ChatMessage } from './ChatMessage';
 import { AnimationIndicator } from './AnimationIndicator';
 
