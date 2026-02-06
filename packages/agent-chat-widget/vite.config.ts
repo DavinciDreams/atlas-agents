@@ -31,6 +31,8 @@ export default defineConfig({
         '@atlas.agents/types',
         '@atlas.agents/speech-stt',
         '@atlas.agents/speech-tts',
+        '@atlas.agents/speech-stt-local',
+        '@atlas.agents/speech-tts-local',
         '@atlas.agents/avatar-core',
         '@atlas.agents/avatar-react',
         '@atlas.agents/chat-ui',

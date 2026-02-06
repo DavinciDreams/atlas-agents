@@ -3,9 +3,31 @@ import type { Message } from '@atlas.agents/types';
 import { ChatContainer } from '@atlas.agents/chat-ui';
 import { STTService, type STTConfig } from '@atlas.agents/speech-stt';
 import { TTSService, type TTSConfig } from '@atlas.agents/speech-tts';
+import { LocalTTSService, checkLocalSpeechServer, type LocalTTSConfig } from '@atlas.agents/speech-tts-local';
+import { LocalSTTService, type LocalSTTConfig } from '@atlas.agents/speech-stt-local';
 import { ChatOrchestrator } from './ChatOrchestrator';
 import { AnimationJudge, type AnimationJudgeConfig } from './AnimationJudge';
 import type { AIConfig } from './AIService';
+
+/** Shared shape of any TTS service (TTSService | LocalTTSService) */
+interface TTSProvider {
+  synthesize(text: string): Promise<{ audioBuffer: ArrayBuffer; visemes: unknown[]; duration: number }>;
+  speak(text: string): Promise<void>;
+  speakChunk(text: string): void;
+  stop(): void;
+  isSpeaking(): boolean;
+  on(event: string, handler: (data: unknown) => void): () => void;
+  dispose(): void;
+}
+
+/** Shared shape of any STT service (STTService | LocalSTTService) */
+interface STTProvider {
+  start(): Promise<void>;
+  stop(): void;
+  isListening(): boolean;
+  on(event: string, handler: (data: unknown) => void): () => void;
+  dispose(): void;
+}
 
 export interface AgentChatWidgetConfig {
   agentId?: string;
@@ -18,6 +40,10 @@ export interface AgentChatWidgetConfig {
   speech?: {
     tts?: TTSConfig;
     stt?: STTConfig;
+    localTts?: LocalTTSConfig;
+    localStt?: LocalSTTConfig;
+    /** Set to false to disable auto-detection of local speech server. Default: true */
+    autoDetectLocal?: boolean;
   };
   judge?: AnimationJudgeConfig;
   protocols?: {
@@ -53,8 +79,8 @@ export const AgentChatWidget: React.FC<AgentChatWidgetProps> = ({
   );
 
   const orchestratorRef = useRef<ChatOrchestrator | null>(null);
-  const sttRef = useRef<STTService | null>(null);
-  const ttsRef = useRef<TTSService | null>(null);
+  const sttRef = useRef<STTProvider | null>(null);
+  const ttsRef = useRef<TTSProvider | null>(null);
   const judgeRef = useRef<AnimationJudge | null>(null);
   const queueTimeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const handleSendMessageRef = useRef<(text: string) => void>(() => {});
@@ -104,26 +130,54 @@ export const AgentChatWidget: React.FC<AgentChatWidgetProps> = ({
 
   // Initialize services
   useEffect(() => {
+    let disposed = false;
+
     orchestratorRef.current = new ChatOrchestrator(config.ai ?? {}, config.maxMessages);
-    sttRef.current = new STTService(config.speech?.stt);
-    ttsRef.current = new TTSService(config.speech?.tts);
     judgeRef.current = new AnimationJudge({
       apiKey: config.ai?.apiKey,
       ...config.judge,
     });
 
-    // Wire STT events
-    sttRef.current.on('stt:final-transcript', ({ text }) => {
-      handleSendMessageRef.current(text);
-    });
-    sttRef.current.on('stt:started', () => setIsListening(true));
-    sttRef.current.on('stt:stopped', () => setIsListening(false));
-    sttRef.current.on('stt:error', ({ error, type }) => {
-      console.error(`[STT Error] ${type}:`, error.message);
-      setIsListening(false);
-    });
+    const wireSTT = (stt: STTProvider) => {
+      stt.on('stt:final-transcript', (data: unknown) => {
+        const { text } = data as { text: string };
+        handleSendMessageRef.current(text);
+      });
+      stt.on('stt:started', () => setIsListening(true));
+      stt.on('stt:stopped', () => setIsListening(false));
+      stt.on('stt:error', (data: unknown) => {
+        const { error, type } = data as { error: Error; type: string };
+        console.error(`[STT Error] ${type}:`, error.message);
+        setIsListening(false);
+      });
+    };
+
+    const initServices = async () => {
+      const autoDetect = config.speech?.autoDetectLocal !== false;
+
+      if (autoDetect) {
+        const { available } = await checkLocalSpeechServer();
+        if (!disposed && available) {
+          console.info('[Speech] Local speech server detected — using Kokoro TTS + Faster-Whisper STT');
+          ttsRef.current = new LocalTTSService(config.speech?.localTts) as unknown as TTSProvider;
+          sttRef.current = new LocalSTTService(config.speech?.localStt) as unknown as STTProvider;
+          wireSTT(sttRef.current);
+          return;
+        }
+      }
+
+      if (disposed) return;
+
+      // Fallback to web speech services
+      ttsRef.current = new TTSService(config.speech?.tts) as unknown as TTSProvider;
+      sttRef.current = new STTService(config.speech?.stt) as unknown as STTProvider;
+      wireSTT(sttRef.current);
+    };
+
+    initServices();
 
     return () => {
+      disposed = true;
       orchestratorRef.current?.dispose();
       sttRef.current?.dispose();
       ttsRef.current?.dispose();

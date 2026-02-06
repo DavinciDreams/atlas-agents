@@ -1,6 +1,6 @@
 {
   "name": "@atlas.agents/agent-chat-widget",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "description": "Composed agent chat widget with AI, speech, avatar, and protocol adapters",
   "main": "dist/agent-chat-widget.cjs.js",
@@ -20,12 +20,14 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@atlas.agents/types": "0.1.0",
-    "@atlas.agents/speech-stt": "0.1.0",
-    "@atlas.agents/speech-tts": "0.1.0",
-    "@atlas.agents/avatar-core": "0.1.0",
-    "@atlas.agents/avatar-react": "0.1.0",
-    "@atlas.agents/chat-ui": "0.1.0",
+    "@atlas.agents/types": "0.2.0",
+    "@atlas.agents/speech-stt": "0.2.0",
+    "@atlas.agents/speech-tts": "0.2.0",
+    "@atlas.agents/speech-stt-local": "0.2.0",
+    "@atlas.agents/speech-tts-local": "0.2.0",
+    "@atlas.agents/avatar-core": "0.2.0",
+    "@atlas.agents/avatar-react": "0.2.0",
+    "@atlas.agents/chat-ui": "0.2.0",
     "zustand": "^4.4.7"
   },
   "peerDependencies": {

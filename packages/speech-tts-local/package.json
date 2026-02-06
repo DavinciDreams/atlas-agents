@@ -1,15 +1,15 @@
 {
-  "name": "@atlas.agents/speech-tts",
+  "name": "@atlas.agents/speech-tts-local",
   "version": "0.2.0",
   "type": "module",
-  "description": "Text-to-speech service with Edge TTS and browser fallback + viseme generation",
-  "main": "dist/speech-tts.cjs.js",
-  "module": "dist/speech-tts.es.js",
+  "description": "Local GPU-accelerated TTS via WebSocket (Kokoro) with web-speech fallback",
+  "main": "dist/speech-tts-local.cjs.js",
+  "module": "dist/speech-tts-local.es.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/speech-tts.es.js",
-      "require": "./dist/speech-tts.cjs.js",
+      "import": "./dist/speech-tts-local.es.js",
+      "require": "./dist/speech-tts-local.cjs.js",
       "types": "./dist/index.d.ts"
     }
   },
@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@atlas.agents/types": "0.2.0",
-    "edge-tts-universal": "^1.3.3"
+    "@atlas.agents/speech-tts": "0.2.0"
   },
   "devDependencies": {
     "typescript": "^5.5.3",
